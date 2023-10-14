@@ -1,5 +1,7 @@
 package ds;
 
+import ds.linked_list.LinkedList;
+
 public class Runner {
 
     public static void main(String[] args) {

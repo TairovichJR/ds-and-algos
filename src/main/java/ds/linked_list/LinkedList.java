@@ -1,7 +1,10 @@
-package ds;
+package ds.linked_list;
 
 import java.util.NoSuchElementException;
 
+/**
+ * Singly LinkedList Implementation
+ */
 public class LinkedList {
     private Node head;
     private Node tail;
