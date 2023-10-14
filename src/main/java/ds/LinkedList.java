@@ -2,13 +2,13 @@ package ds;
 
 import java.util.NoSuchElementException;
 
-public class LinkedList<T> {
-    private Node<T> head;
-    private Node<T> tail;
+public class LinkedList {
+    private Node head;
+    private Node tail;
     private int length;
 
-    public LinkedList(T value){
-        Node<T> node = new Node<>(value);
+    public LinkedList(int value){
+        Node node = new Node(value);
         head = tail = node;
         length = 1;
     }
@@ -19,9 +19,9 @@ public class LinkedList<T> {
     }
 
     public void reverse(){
-        Node<T> prev = null;
-        Node<T> current = head;
-        Node<T> next = null;
+        Node prev = null;
+        Node current = head;
+        Node next = null;
         while (current != null){
             next = current.next;
             current.next = prev;
@@ -32,7 +32,7 @@ public class LinkedList<T> {
         head = prev;
     }
 
-    public Node<T> remove(int index){
+    public Node remove(int index){
         if (index < 0 || index >= length){
             throw new IndexOutOfBoundsException("Index " + index + " is out of bounds");
         }
@@ -43,15 +43,15 @@ public class LinkedList<T> {
         else if (index == length - 1){
             return removeLast();
         }
-        Node<T> prev = get(index - 1);
-        Node<T> nodeToRemove = prev.next;
+        Node prev = get(index - 1);
+        Node nodeToRemove = prev.next;
         prev.next = nodeToRemove.next;
         nodeToRemove.next = null;
         length--;
         return nodeToRemove;
     }
 
-    public boolean insert(int index, T value){
+    public boolean insert(int index, int value){
         if(index < 0 || index > length){
             throw new  IndexOutOfBoundsException("Index " + index + " is out of bounds");
         }
@@ -61,8 +61,8 @@ public class LinkedList<T> {
         else if(index == length){
             append(value);
         }else{
-            Node<T> node = new Node<>(value);
-            Node<T> prev = get(index - 1);
+            Node node = new Node(value);
+            Node prev = get(index - 1);
             node.next = prev.next;
             prev.next = node;
         }
@@ -70,8 +70,8 @@ public class LinkedList<T> {
         return true;
     }
 
-    public boolean set(int index, T value){
-        Node<T> node = get(index);
+    public boolean set(int index, int value){
+        Node node = get(index);
         if (node == null){
             throw new NoSuchElementException("Index is out of bounds");
         }
@@ -79,19 +79,19 @@ public class LinkedList<T> {
         return true;
     }
 
-    public Node<T> get(int index){
+    public Node get(int index){
         if (index < 0 || index >= length) {
             throw new IndexOutOfBoundsException("Index " + index + " is out of bounds");
         }
-        Node<T> node = head;
+        Node node = head;
         for (int i = 0; i < index; i++) {
             node = node.next;
         }
         return node;
     }
 
-    public void append(T value){
-        Node<T> node = new Node<>(value);
+    public void append(int value){
+        Node node = new Node(value);
         if (isEmpty()){
             head = tail = node;
         }else{
@@ -101,8 +101,8 @@ public class LinkedList<T> {
         length++;
     }
 
-    public void prepend(T value){
-        Node<T> node = new Node<>(value);
+    public void prepend(int value){
+        Node node = new Node(value);
         if (isEmpty()){
             head = tail = node;
         }else{
@@ -112,11 +112,11 @@ public class LinkedList<T> {
         length++;
     }
 
-    public Node<T> removeFirst(){
+    public Node removeFirst(){
         if (isEmpty()){
-            throw new NoSuchElementException("The LinkedList is empty");
+            throw new NoSuchElementException("inthe LinkedList is empty");
         }
-        Node<T> first = head;
+        Node first = head;
         head = head.next;
         first.next = null;
         length--;
@@ -126,13 +126,13 @@ public class LinkedList<T> {
         return first;
     }
 
-    public Node<T> removeLast(){
+    public Node removeLast(){
         if (isEmpty()){
-            throw new NoSuchElementException("The LinkedList is empty");
+            throw new NoSuchElementException("inthe LinkedList is empty");
         }
 
-        Node<T> last = head;
-        Node<T> pre = head;
+        Node last = head;
+        Node pre = head;
         while (last.next != null){
             pre = last;
             last = last.next;
@@ -153,13 +153,13 @@ public class LinkedList<T> {
 
     public String getDetails(){
         return "\nHEAD: " + this.head + "\n" +
-                "TAIL: " + this.tail + "\n"+
-                "LENGTH: " + this.length + "\n";
+                "intAIL: " + this.tail + "\n"+
+                "LENGintH: " + this.length + "\n";
     }
 
     public String toString(){
         StringBuilder result = new StringBuilder();
-        Node<T> temp = head;
+        Node temp = head;
         while (temp != null){
             result.append(temp.value);
             if (temp.next != null){
@@ -170,10 +170,10 @@ public class LinkedList<T> {
         return result.toString();
     }
 
-    private class Node<T>{
-        Node<T> next;
-        T value;
-        public Node(T value){
+    private class Node{
+        Node next;
+        int value;
+        public Node(int value){
             this.value = value;
         }
         public String toString(){
