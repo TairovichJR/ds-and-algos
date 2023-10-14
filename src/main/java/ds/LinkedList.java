@@ -1,126 +1,99 @@
 package ds;
 
-public class LinkedList {
+import java.util.NoSuchElementException;
 
-    private Node head;
-    private Node tail;
+public class LinkedList<T> {
+    private Node<T> head;
+    private Node<T> tail;
     private int length;
 
-    public LinkedList(int value){
-        Node node = new Node(value);
-        head = node;
-        tail = node;
-        this.length = 1;
+    public LinkedList(T value){
+        Node<T> node = new Node<>(value);
+        head = tail = node;
+        length = 1;
+    }
+
+    public LinkedList(){
+        head = tail = null;
+        length = 0;
     }
 
     public void reverse(){
-        Node current = head;
-        head = tail;
-        tail = current;
-
-        Node before = null;
-        for (int i = 0; i < length; i++) {
-            Node after = current.next;
-            current.next = before;
-            before = current;
-            current = after;
+        Node<T> prev = null;
+        Node<T> current = head;
+        Node<T> next = null;
+        while (current != null){
+            next = current.next;
+            current.next = prev;
+            prev = current;
+            current = next;
         }
+        tail = head;
+        head = prev;
     }
 
-    public Node remove(int index){
+    public Node<T> remove(int index){
         if (index < 0 || index >= length){
-            return null;
+            throw new IndexOutOfBoundsException("Index " + index + " is out of bounds");
         }
+
         if (index == 0){
             return removeFirst();
         }
         else if (index == length - 1){
             return removeLast();
         }
-        Node prev = get(index - 1);
-        Node nodeToRemove = prev.next;
+        Node<T> prev = get(index - 1);
+        Node<T> nodeToRemove = prev.next;
         prev.next = nodeToRemove.next;
         nodeToRemove.next = null;
         length--;
         return nodeToRemove;
     }
 
-    public boolean set(int index, int value){
-        Node node = get(index);
-        if (node != null){
-            node.value = value;
-            return true;
-        }
-        return false;
-    }
-
-    public boolean insert(int index, int value){
+    public boolean insert(int index, T value){
         if(index < 0 || index > length){
-            return false;
+            throw new  IndexOutOfBoundsException("Index " + index + " is out of bounds");
         }
         if (index == 0){
             prepend(value);
-            return true;
         }
-        else if (index == length ){
+        else if(index == length){
             append(value);
-            return true;
+        }else{
+            Node<T> node = new Node<>(value);
+            Node<T> prev = get(index - 1);
+            node.next = prev.next;
+            prev.next = node;
         }
-        Node node = new Node(value);
-        Node temp = get(index-1);
-//      Node temp = head;
-//      for (int i = 0; i < index-1; i++) {
-//          temp = temp.next;
-//      }
-        node.next = temp.next;
-        temp.next = node;
         length++;
         return true;
     }
 
-    public Node get(int index){
+    public boolean set(int index, T value){
+        Node<T> node = get(index);
+        if (node == null){
+            throw new NoSuchElementException("Index is out of bounds");
+        }
+        node.value = value;
+        return true;
+    }
+
+    public Node<T> get(int index){
         if (index < 0 || index >= length) {
-            return null;
+            throw new IndexOutOfBoundsException("Index " + index + " is out of bounds");
         }
-        Node temp = head;
+        Node<T> node = head;
         for (int i = 0; i < index; i++) {
-            temp = temp.next;
+            node = node.next;
         }
-        return temp;
+        return node;
     }
 
-    public Node removeFirst(){
-        if (length == 0){
-            return null;
-        }
-        Node temp = head;
-        head = head.next;
-        temp.next = null;
-        length--;
-        if (length == 0){
-            head = null;
-            tail = null;
-        }
-        return temp;
-    }
-
-    public void prepend(int value){
-        Node node = new Node(value);
-        if (length == 0) {
-            head = node;
-            tail = node;
-        }else{
-            node.next = head;
-            head = node;
-        }
-        length++;
-    }
-
-    public void append(int value){
-        Node node = new Node(value);
-        if (length == 0){
-            head = node;
-            tail = node;
+    public void append(T value){
+        Node<T> node = new Node<>(value);
+        if (isEmpty()){
+            head = tail = node;
         }else{
             tail.next = node;
             tail = node;
@@ -128,57 +101,81 @@ public class LinkedList {
         length++;
     }
 
-    public Node removeLast(){
-        if (length == 0) return null;
-        Node temp = head;
-        Node pre = head;
-        while (temp.next != null){
-            pre = temp;
-            temp = temp.next;
+    public void prepend(T value){
+        Node<T> node = new Node<>(value);
+        if (isEmpty()){
+            head = tail = node;
+        }else{
+            node.next = head;
+            head = node;
         }
+        length++;
+    }
+
+    public Node<T> removeFirst(){
+        if (isEmpty()){
+            throw new NoSuchElementException("The LinkedList is empty");
+        }
+        Node<T> first = head;
+        head = head.next;
+        first.next = null;
+        length--;
+        if (isEmpty()){
+            head = tail = null;
+        }
+        return first;
+    }
+
+    public Node<T> removeLast(){
+        if (isEmpty()){
+            throw new NoSuchElementException("The LinkedList is empty");
+        }
+
+        Node<T> last = head;
+        Node<T> pre = head;
+        while (last.next != null){
+            pre = last;
+            last = last.next;
+        }
+
         tail = pre;
         tail.next = null;
         length--;
         if (length == 0){
-            head = null;
-            tail = null;
+            head = tail = null;
         }
-        return temp;
+        return last;
+    }
+
+    private boolean isEmpty(){
+        return length == 0;
+    }
+
+    public String getDetails(){
+        return "\nHEAD: " + this.head + "\n" +
+                "TAIL: " + this.tail + "\n"+
+                "LENGTH: " + this.length + "\n";
     }
 
     public String toString(){
-        Node temp = head;
-        StringBuilder result = new StringBuilder("[");
+        StringBuilder result = new StringBuilder();
+        Node<T> temp = head;
         while (temp != null){
             result.append(temp.value);
             if (temp.next != null){
-                result.append(", ");
+                result.append(" -> ");
             }
             temp = temp.next;
         }
-        result.append("]");
         return result.toString();
     }
 
-    public Node getHead(){
-        return this.head != null? this.head : null;
-    }
-
-    public Node getTail(){
-        return this.tail != null ? this.tail : null;
-    }
-
-    public int getLength(){
-        return this.length;
-    }
-
-    class Node {
-        Node next;
-        int value;
-        public Node(int value){
+    private class Node<T>{
+        Node<T> next;
+        T value;
+        public Node(T value){
             this.value = value;
         }
-
         public String toString(){
             return String.valueOf(value);
         }
